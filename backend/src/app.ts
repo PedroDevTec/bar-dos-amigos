@@ -5,10 +5,12 @@ import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 
 import { authMiddleware } from './middlewares/authenticate';
 
 const app = express();
+app.use(morgan("tiny"))
  app.use(cors({
   origin: 'http://localhost:3000', // Permitir solicitações do domínio da sua aplicação Next.js
   methods: ['GET', 'POST'], // Permitir métodos específicos, conforme necessário
@@ -25,7 +27,7 @@ app.use(
 );
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', authMiddleware ,userRoutes);
+app.use('/api/users',userRoutes);
 
 app.use(cookieParser());
 app.use(passport.initialize());

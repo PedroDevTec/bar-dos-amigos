@@ -21,7 +21,7 @@ export const loginUserHandler = async (req: Request, res: Response) => {
 
   try {
     const { user, token } = await loginUser(email, password);
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (error) {
     res.status(401).json({ error: 'Invalid credentials' });
   }
