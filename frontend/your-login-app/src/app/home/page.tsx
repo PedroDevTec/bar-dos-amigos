@@ -33,12 +33,16 @@ export default function Home() {
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Perfil</h2>
           <div className={styles.profileInfo}>
-            <div className={styles.profilePic}>
-              <img src="/api/placeholder/64/64" alt="Foto de perfil" />
-            </div>
+            <Image
+            src={session.user.image}
+            width={150}
+            height={150}
+            alt="Foto do usuário"
+            className={styles.profilePic}
+          />
             <div>
-              <p className={styles.username}>Nome do Usuário</p>
-              <p className={styles.userHandle}>@usuario</p>
+              <p className={styles.username}>{session.user.name}</p>
+              <p className={styles.userHandle}>@{session.user.name}</p>
             </div>
           </div>
         </div>
