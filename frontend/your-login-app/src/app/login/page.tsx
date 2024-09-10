@@ -1,102 +1,83 @@
 'use client';
 
 import { useState } from 'react';
-import Head from 'next/head';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';  // Importando o signIn de NextAuth
+import { useRouter } from 'next/navigation'; // Importe o useRouter para redirecionar
 import styles from './page.module.css';
+import Modal from '../components/modal'; // Certifique-se de que o caminho está correto
 
-
-export default function Login() {
-  const [email, setEmail] = useState('');
+export default function HomePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const router = useRouter();
-  const { data: session } = useSession();
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter(); // useRouter hook para redirecionar o usuário
 
-  // Redireciona o usuário se já estiver logado
-  if (session) {
-    router.push('/home');
-  }
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault(); 
 
     const result = await signIn('credentials', {
-      redirect: false,
       email,
       password,
+      callbackUrl: '/home'
     });
-
-    setIsLoading(false);
-
-    if (result.error) {
-      setError(result.error);
-    } else {
-      // Redireciona para a página desejada após login
-      router.push('/dashboard');
-    }
   };
 
+  // Função para login com Discord
   const handleDiscordLogin = () => {
-    signIn('discord');
+    signIn('discord',{callbackUrl:'/home'}); // Isso redireciona o usuário para o login do Discord
   };
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Login | Bar dos Amigos Online</title>
-        <meta name="description" content="Login no Bar dos Amigos Online" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <div className={styles.content}>
+        <h1 className={styles.title}>Welcome to Our Platform!</h1>
+        <p className={styles.subtitle}>Your journey to the future starts here.</p>
+        <button className={styles.loginButton} onClick={openModal}>
+          Login to Get Started
+        </button>
+      </div>
 
-      <main className={styles.main}>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <h1 className={styles.title}>Bar dos Amigos Online</h1>
-          <p className={styles.subtitle}>Entre para o melhor happy hour virtual!</p>
-          
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">Email</label>
-            <input className={styles.input}
-              type="email"
-              id="email"
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <form className={styles.loginForm} onSubmit={handleLogin}>
+            <h2 className={styles.formTitle}>Login</h2>
+
+            {/* Exibe mensagem de erro, se houver */}
+            {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+
+            {/* Campos para login com credenciais */}
+            <input
+              type="text"
+              placeholder="Username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className={styles.input}
               required
-              placeholder="Digite seu email"
-              aria-label="Email"
             />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="password">Senha</label>
-            <input className={styles.input}
+            <input
               type="password"
-              id="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
               required
-              placeholder="Digite sua senha"
-              aria-label="Password"
             />
-          </div>
 
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Entrando...' : 'Login'}
-          </button>
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <div className={styles.discordLogin}>
-            <button type="button" onClick={handleDiscordLogin} className={styles.discordButton}>
-              Entrar com Discord
+            <button type="submit" className={styles.submitButton}>
+              Submit
             </button>
-          </div>
-        </form>
-      </main>
+
+            {/* Botão para login com Discord */}
+            <button  type="button" formTarget='_blank' onClick={handleDiscordLogin} className={styles.discordButton}>
+              Login with Discord
+            </button>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }

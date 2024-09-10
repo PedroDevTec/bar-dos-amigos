@@ -12,7 +12,7 @@ html {
   margin: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-decoration: inherit;
   color: inherit;
 }
@@ -24,4 +24,11 @@ button {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid var(--secondary-color);
+  border-radius: 4px;
 }
